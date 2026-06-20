@@ -25,6 +25,15 @@ const PORT = process.env.PORT || 5000;
 app.use(cors({ origin: true, credentials: true }));
 app.use(express.json());
 
+// Normalize Vercel paths: Ensure all API requests start with /api prefix
+app.use((req, res, next) => {
+  if (req.url && !req.url.startsWith('/api') && req.url !== '/') {
+    req.url = '/api' + req.url;
+  }
+  next();
+});
+
+
 // Request Logger Middleware (with fix for OPTIONS requests)
 app.use((req, res, next) => {
   console.log(`[${new Date().toISOString()}] Received ${req.method} request for ${req.url}`);
